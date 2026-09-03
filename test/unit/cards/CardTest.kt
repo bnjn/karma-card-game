@@ -16,8 +16,8 @@ class CardTest {
 
     @Test
     fun `a card has a suit and a rank`() {
-        val card = Card(CardSuit.CLUBS, CardRank.ONE)
+        val card = Card(CardSuit.CLUBS, CardRank.ACE)
         assertEquals(card.suit, CardSuit.CLUBS)
-        assertEquals(card.rank, CardRank.ONE)
+        assertEquals(card.rank, CardRank.ACE)
     }
 }
