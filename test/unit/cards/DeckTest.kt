@@ -6,7 +6,6 @@ import cards.Card
 import cards.Deck
 import cards.data.CardRank
 import cards.data.CardSuit
-import kotlin.random.Random
 import kotlin.test.*
 
 class DeckTest {
