@@ -1,9 +1,16 @@
 package cards
 
-interface IDeck {
-    fun draw(amount: Int)
+import cards.data.CardRank
+import cards.data.CardSuit
 
-    fun shuffle()
+interface IDeck {
+    fun draw(): Card?
+
+    fun shuffle(seed: Int? = null)
 
     fun reset()
+
+    fun cardAtPosition(position: Int): Pair<CardSuit, CardRank>?
+
+    fun getCardsRemaining(): Int
 }

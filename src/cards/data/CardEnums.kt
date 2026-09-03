@@ -9,7 +9,6 @@ enum class CardSuit {
 
 enum class CardRank {
     ACE,
-    ONE,
     TWO,
     THREE,
     FOUR,
