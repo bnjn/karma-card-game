@@ -2,9 +2,11 @@ package cards
 
 import cards.data.CardRank
 import cards.data.CardSuit
+import korlibs.io.util.UUID
 
 interface ICard {
     val suit: CardSuit
     val rank: CardRank
-    val isFaceUp: Boolean
+    var isFaceUp: Boolean
+    val id: UUID
 }

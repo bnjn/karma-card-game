@@ -2,9 +2,11 @@ package cards
 
 import cards.data.CardRank
 import cards.data.CardSuit
+import korlibs.io.util.UUID
 import kotlin.random.Random
 
 class Deck : IDeck {
+    override val id = UUID.randomUUID()
     private val cards: MutableList<Card> = mutableListOf()
 
     constructor() {
@@ -15,12 +17,17 @@ class Deck : IDeck {
         }
     }
 
-    override fun draw(): Card? =
-        try {
-            cards.removeAt(0)
+    override fun draw(amount: Int): List<Card> {
+        val drawnCards: MutableList<Card> = mutableListOf()
+        return try {
+            repeat(amount) {
+                drawnCards.add(cards.removeAt(0))
+            }
+            drawnCards
         } catch (e: IndexOutOfBoundsException) {
-            null
+            drawnCards
         }
+    }
 
     override fun shuffle(seed: Int?) {
         when (seed) {
@@ -29,9 +36,9 @@ class Deck : IDeck {
         }
     }
 
-    override fun reset() {
-        TODO("Not yet implemented")
-    }
+    override fun getCards(): List<Card> = cards.map { it }
+
+    override fun getCardIds(): List<UUID> = cards.map { it.id }
 
     override fun cardAtPosition(position: Int): Pair<CardSuit, CardRank>? =
         try {
