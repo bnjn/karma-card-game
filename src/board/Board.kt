@@ -21,9 +21,9 @@ class Board(
     init {
         deck.shuffle(seed)
         players.forEach { player ->
-            player.addCards(deck.draw(3), HandType.HAND)
-            player.addCards(deck.draw(3), HandType.BOARDFACEUP)
             player.addCards(deck.draw(3), HandType.BOARDFACEDOWN)
+            player.addCards(deck.draw(3), HandType.BOARDFACEUP)
+            player.addCards(deck.draw(3), HandType.HAND)
         }
     }
 
