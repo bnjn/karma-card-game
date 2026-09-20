@@ -9,9 +9,9 @@ import player.Player
 import player.data.HandType
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class PlayerTest {
@@ -113,6 +113,51 @@ class PlayerTest {
         val discardedCard = player.removeCards(card, HandType.BOARDFACEUP)
         assertEquals(player.getFaceUpCards().size, 0)
         assertFalse { player.getFaceUpCards().containsAll(discardedCard) }
+    }
+
+    @Test
+    fun `removeCards throws an exception if the player doesn't have the cards in their hand`() {
+        val player = Player()
+        val cards = listOf(Card(CardSuit.CLUBS, CardRank.KING))
+        player.addCards(cards, HandType.HAND)
+        val exception =
+            assertFailsWith<IllegalStateException> {
+                player.removeCards(
+                    listOf(Card(CardSuit.HEARTS, CardRank.ACE)),
+                    HandType.HAND,
+                )
+            }
+        assertEquals("Player doesn't have those cards", exception.message)
+    }
+
+    @Test
+    fun `removeCards throws an exception if the player doesn't have the cards in their face up board`() {
+        val player = Player()
+        val cards = listOf(Card(CardSuit.CLUBS, CardRank.KING))
+        player.addCards(cards, HandType.BOARDFACEUP)
+        val exception =
+            assertFailsWith<IllegalStateException> {
+                player.removeCards(
+                    listOf(Card(CardSuit.HEARTS, CardRank.ACE)),
+                    HandType.BOARDFACEUP,
+                )
+            }
+        assertEquals("Player doesn't have those cards", exception.message)
+    }
+
+    @Test
+    fun `removeCards throws an exception if the player doesn't have the cards in their face down board`() {
+        val player = Player()
+        val cards = listOf(Card(CardSuit.CLUBS, CardRank.KING))
+        player.addCards(cards, HandType.BOARDFACEDOWN)
+        val exception =
+            assertFailsWith<IllegalStateException> {
+                player.removeCards(
+                    listOf(Card(CardSuit.HEARTS, CardRank.ACE)),
+                    HandType.BOARDFACEDOWN,
+                )
+            }
+        assertEquals("Player doesn't have those cards", exception.message)
     }
 
     @Test

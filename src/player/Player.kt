@@ -36,8 +36,9 @@ class Player : IPlayer {
     override fun removeCards(
         cards: List<Card>,
         type: HandType,
-    ): List<Card> =
-        when (type) {
+    ): List<Card> {
+        if (!hasCards(cards, type)) throw IllegalStateException("Player doesn't have those cards")
+        return when (type) {
             HAND -> {
                 hand.removeAll(cards)
                 cards
@@ -54,6 +55,7 @@ class Player : IPlayer {
                 cards
             }
         }
+    }
 
     override fun getHandCards(): List<Card> = hand.toList()
 
@@ -62,4 +64,22 @@ class Player : IPlayer {
     override fun getFaceUpCards(): List<Card> = faceUpCards.toList()
 
     override fun cardsRemaining(): Int = hand.size + faceUpCards.size + faceDownCards.size
+
+    private fun hasCards(
+        cards: List<Card>,
+        type: HandType,
+    ): Boolean =
+        when (type) {
+            HAND -> {
+                hand.containsAll(cards)
+            }
+
+            BOARDFACEUP -> {
+                faceUpCards.containsAll(cards)
+            }
+
+            BOARDFACEDOWN -> {
+                faceDownCards.containsAll(cards)
+            }
+        }
 }
