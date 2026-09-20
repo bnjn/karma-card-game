@@ -157,7 +157,7 @@ class TurnControllerTest {
     }
 
     @Test
-    fun `playTurn changes activePlayerId to the first player id in playerOrder when the second player takes their turn in a 3 player game`() {
+    fun `playTurn changes activePlayerId to the last player id in playerOrder when the second player takes their turn in a 3 player game`() {
         val board = Board(3)
         val turnController = TurnController(board)
         turnController.findStartingPlayer()
@@ -166,6 +166,19 @@ class TurnControllerTest {
         turnController.playTurn(cardsToPlay, HandType.HAND)
         turnController.playTurn(emptyList(), HandType.HAND)
         assertEquals(playerOrder.last(), turnController.getActivePlayerId())
+    }
+
+    @Test
+    fun `playTurn changes activePlayerId to the first player id in playerOrder when the last player takes their turn in a 3 player game`() {
+        val board = Board(3)
+        val turnController = TurnController(board)
+        turnController.findStartingPlayer()
+        val playerOrder = turnController.getPlayerOrder()
+        val cardsToPlay = board.getPlayerById(playerOrder.first()).getHandCards()
+        turnController.playTurn(cardsToPlay, HandType.HAND)
+        turnController.playTurn(emptyList(), HandType.HAND)
+        turnController.playTurn(emptyList(), HandType.HAND)
+        assertEquals(playerOrder.first(), turnController.getActivePlayerId())
     }
 
     @Test
