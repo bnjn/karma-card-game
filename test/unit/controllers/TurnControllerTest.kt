@@ -49,7 +49,8 @@ class TurnControllerTest {
         val board = Board(numberOfPlayers = 3, seed = 12825)
         val turnController = TurnController(board)
         val startingPlayer = board.getPlayerById(board.getPlayerIds()[1])
-        turnController.findStartingPlayer()
+        // seed = 2 results in player 2 being selected
+        turnController.findStartingPlayer(seed = 2)
         assertEquals(startingPlayer, turnController.getActivePlayer())
     }
 

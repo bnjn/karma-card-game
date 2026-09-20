@@ -18,6 +18,7 @@ import cards.data.CardRank.THREE
 import cards.data.CardRank.TWO
 import korlibs.io.util.UUID
 import player.Player
+import kotlin.random.Random
 
 class TurnController(
     override val board: Board,
@@ -55,11 +56,11 @@ class TurnController(
                     Pair(id, faceUpCards.maxOf { startingPlayerCardValues.getValue(it.rank) })
                 }.sortedByDescending { it.second }
 
-        if (lowestCardPlayers.distinctBy { it.second }.size == 1) {
-            this.activePlayer = board.getPlayerById(lowestCardPlayers.random().first)
-        } else {
-            this.activePlayer = board.getPlayerById(lowestCardPlayers.first().first)
-        }
+        val playersWithLowestCards = lowestCardPlayers.filter { it.second == lowestCardPlayers.first().second }
+
+        val startingPlayer = playersWithLowestCards.random(seed?.let { Random(it) } ?: Random).first
+
+        this.activePlayer = board.getPlayerById(startingPlayer)
     }
 
     override fun playTurn(
