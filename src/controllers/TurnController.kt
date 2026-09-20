@@ -17,7 +17,6 @@ import cards.data.CardRank.TEN
 import cards.data.CardRank.THREE
 import cards.data.CardRank.TWO
 import korlibs.io.util.UUID
-import player.Player
 import kotlin.random.Random
 
 class TurnController(
@@ -76,10 +75,7 @@ class TurnController(
         this.turnNumber = 1
     }
 
-    override fun playTurn(
-        playerId: UUID,
-        card: Card,
-    ) {
+    override fun playTurn(card: Card) {
         if (activePlayerId == null) {
             throw IllegalStateException("No starting player. TurnController.findStartingPlayer must be executed first")
         }

@@ -1,6 +1,9 @@
 package unit.controllers
 
 import board.Board
+import cards.Card
+import cards.data.CardRank
+import cards.data.CardSuit
 import controllers.TurnController
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -104,8 +107,7 @@ class TurnControllerTest {
     fun `playTurn throws an exception if a starting player hasn't been chosen`() {
         val board = Board()
         val turnController = TurnController(board)
-        val player = board.getPlayerById(board.getPlayerIds().first())
-        val cardToPlay = player.getHandCards().first()
-        assertFailsWith<IllegalStateException> { turnController.playTurn(player.id, cardToPlay) }
+        val cardToPlay = Card(CardSuit.CLUBS, CardRank.ACE)
+        assertFailsWith<IllegalStateException> { turnController.playTurn(cardToPlay) }
     }
 }
