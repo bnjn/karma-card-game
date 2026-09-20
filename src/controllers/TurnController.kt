@@ -17,6 +17,7 @@ import cards.data.CardRank.TEN
 import cards.data.CardRank.THREE
 import cards.data.CardRank.TWO
 import korlibs.io.util.UUID
+import player.data.HandType
 import kotlin.random.Random
 
 class TurnController(
@@ -24,7 +25,7 @@ class TurnController(
 ) : ITurnController {
     private var turnNumber: Int = 0
     private var playerOrder: List<UUID> = board.getPlayerIds()
-    private var activePlayerId: UUID? = null
+    private var activePlayerId: UUID = board.getPlayerIds().first()
     private val startingPlayerCardValues: Map<CardRank, Int> =
         mapOf(
             THREE to 12,
@@ -46,7 +47,7 @@ class TurnController(
 
     override fun getPlayerOrder(): List<UUID> = playerOrder
 
-    override fun getActivePlayerId(): UUID? = activePlayerId
+    override fun getActivePlayerId(): UUID = activePlayerId
 
     override fun findStartingPlayer(seed: Int?) {
         if (turnNumber > 0) throw IllegalStateException("Starting player has already been selected")
@@ -75,9 +76,24 @@ class TurnController(
         this.turnNumber = 1
     }
 
-    override fun playTurn(card: Card) {
-        if (activePlayerId == null) {
+    override fun playTurn(
+        cards: List<Card>,
+        handType: HandType,
+    ) {
+        if (turnNumber == 0) {
             throw IllegalStateException("No starting player. TurnController.findStartingPlayer must be executed first")
+        }
+        try {
+            board.getPlayerById(activePlayerId).removeCards(cards, handType)
+            activePlayerId =
+                if (activePlayerId == playerOrder.last()) {
+                    playerOrder.first()
+                } else {
+                    playerOrder[playerOrder.indexOf(activePlayerId) + 1]
+                }
+            turnNumber++
+        } catch (e: IllegalStateException) {
+            throw IllegalStateException("Active player doesn't have those cards")
         }
     }
 }

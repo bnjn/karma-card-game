@@ -5,17 +5,18 @@ import cards.Card
 import cards.data.CardRank
 import cards.data.CardSuit
 import controllers.TurnController
+import player.data.HandType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class TurnControllerTest {
     @Test
-    fun `when TurnController is initialised, getActivePlayer returns null`() {
+    fun `when TurnController is initialised, getActivePlayerId returns the first player on the board`() {
         val board = Board()
         val turnController = TurnController(board)
         val activePlayerId = turnController.getActivePlayerId()
-        assertEquals(null, activePlayerId)
+        assertEquals(board.getPlayerIds().first(), activePlayerId)
     }
 
     @Test
@@ -107,7 +108,82 @@ class TurnControllerTest {
     fun `playTurn throws an exception if a starting player hasn't been chosen`() {
         val board = Board()
         val turnController = TurnController(board)
-        val cardToPlay = Card(CardSuit.CLUBS, CardRank.ACE)
-        assertFailsWith<IllegalStateException> { turnController.playTurn(cardToPlay) }
+        val cardsToPlay = listOf(Card(CardSuit.CLUBS, CardRank.ACE))
+        assertFailsWith<IllegalStateException> { turnController.playTurn(cardsToPlay, HandType.HAND) }
+    }
+
+    @Test
+    fun `playTurn increments turnNumber by 1`() {
+        val board = Board()
+        val turnController = TurnController(board)
+        turnController.findStartingPlayer()
+        val cardsToPlay = board.getPlayerById(turnController.getActivePlayerId()).getHandCards()
+        turnController.playTurn(cardsToPlay, HandType.HAND)
+        assertEquals(2, turnController.getTurnNumber())
+    }
+
+    @Test
+    fun `playTurn changes activePlayerId to the next id in playerOrder`() {
+        val board = Board()
+        val turnController = TurnController(board)
+        turnController.findStartingPlayer()
+        val playerOrder = turnController.getPlayerOrder()
+        val cardsToPlay = board.getPlayerById(turnController.getActivePlayerId()).getHandCards()
+        turnController.playTurn(cardsToPlay, HandType.HAND)
+        assertEquals(playerOrder.last(), turnController.getActivePlayerId())
+    }
+
+    @Test
+    fun `playTurn changes activePlayerId to the first player id in playerOrder when the last player takes their turn`() {
+        val board = Board()
+        val turnController = TurnController(board)
+        turnController.findStartingPlayer()
+        val playerOrder = turnController.getPlayerOrder()
+        val cardsToPlay = board.getPlayerById(playerOrder.first()).getHandCards()
+        turnController.playTurn(cardsToPlay, HandType.HAND)
+        turnController.playTurn(emptyList(), HandType.HAND)
+        assertEquals(playerOrder.first(), turnController.getActivePlayerId())
+    }
+
+    @Test
+    fun `playTurn changes activePlayerId to the second player id in playerOrder when the first player takes their turn in a 3 player game`() {
+        val board = Board(3)
+        val turnController = TurnController(board)
+        turnController.findStartingPlayer()
+        val playerOrder = turnController.getPlayerOrder()
+        val cardsToPlay = board.getPlayerById(playerOrder.first()).getHandCards()
+        turnController.playTurn(cardsToPlay, HandType.HAND)
+        assertEquals(playerOrder[1], turnController.getActivePlayerId())
+    }
+
+    @Test
+    fun `playTurn changes activePlayerId to the first player id in playerOrder when the second player takes their turn in a 3 player game`() {
+        val board = Board(3)
+        val turnController = TurnController(board)
+        turnController.findStartingPlayer()
+        val playerOrder = turnController.getPlayerOrder()
+        val cardsToPlay = board.getPlayerById(playerOrder.first()).getHandCards()
+        turnController.playTurn(cardsToPlay, HandType.HAND)
+        turnController.playTurn(emptyList(), HandType.HAND)
+        assertEquals(playerOrder.last(), turnController.getActivePlayerId())
+    }
+
+    @Test
+    fun `playTurn throws an exception if the active player hasn't been chosen`() {
+        val board = Board()
+        val turnController = TurnController(board)
+        val cardsToPlay = listOf(Card(CardSuit.CLUBS, CardRank.ACE))
+        val exception = assertFailsWith<IllegalStateException> { turnController.playTurn(cardsToPlay, HandType.HAND) }
+        assertEquals("No starting player. TurnController.findStartingPlayer must be executed first", exception.message)
+    }
+
+    @Test
+    fun `playTurn throws an exception if the player attempts to play a card they don't have`() {
+        val board = Board()
+        val turnController = TurnController(board)
+        turnController.findStartingPlayer()
+        val cardsToPlay = listOf(Card(CardSuit.CLUBS, CardRank.ACE))
+        val exception = assertFailsWith<IllegalStateException> { turnController.playTurn(cardsToPlay, HandType.HAND) }
+        assertEquals("Active player doesn't have those cards", exception.message)
     }
 }
