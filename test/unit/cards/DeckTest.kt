@@ -62,7 +62,7 @@ class DeckTest {
         val deck = Deck()
         val expectedCard = deck.cardAtPosition(1)
         assertEquals(expectedCard?.first, CardSuit.HEARTS)
-        assertEquals(expectedCard?.second, CardRank.ACE)
+        assertEquals(expectedCard?.second, CardRank.TWO)
     }
 
     @Test
@@ -91,7 +91,7 @@ class DeckTest {
         val deck = Deck()
         deck.shuffle(9992)
         assertEquals(CardSuit.DIAMONDS, deck.cardAtPosition(1)?.first)
-        assertEquals(CardRank.TWO, deck.cardAtPosition(1)?.second)
+        assertEquals(CardRank.THREE, deck.cardAtPosition(1)?.second)
     }
 
     @Test

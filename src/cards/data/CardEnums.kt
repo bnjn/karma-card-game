@@ -8,7 +8,6 @@ enum class CardSuit {
 }
 
 enum class CardRank {
-    ACE,
     TWO,
     THREE,
     FOUR,
@@ -21,4 +20,5 @@ enum class CardRank {
     JACK,
     QUEEN,
     KING,
+    ACE,
 }
