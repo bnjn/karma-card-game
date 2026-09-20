@@ -80,6 +80,8 @@ class TurnController(
         cards: List<Card>,
         handType: HandType,
     ) {
+        // TODO: Implement check for player hand cards remaining when attempting to play a face up or down card -> fails
+        // TODO: Implement check for player face up cards remaining when attempting to play a face down card -> fails
         if (turnNumber == 0) {
             throw IllegalStateException("No starting player. TurnController.findStartingPlayer must be executed first")
         }

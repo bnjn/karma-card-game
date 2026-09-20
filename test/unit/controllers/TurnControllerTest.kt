@@ -146,7 +146,7 @@ class TurnControllerTest {
     }
 
     @Test
-    fun `playTurn changes activePlayerId to the second player id in playerOrder when the first player takes their turn in a 3 player game`() {
+    fun `playTurn changes activePlayerId to the second player id in playerOrder when the first player takes a turn in a 3 player game`() {
         val board = Board(3)
         val turnController = TurnController(board)
         turnController.findStartingPlayer()
@@ -157,7 +157,7 @@ class TurnControllerTest {
     }
 
     @Test
-    fun `playTurn changes activePlayerId to the last player id in playerOrder when the second player takes their turn in a 3 player game`() {
+    fun `playTurn changes activePlayerId to the last player id in playerOrder when the second player takes a turn in a 3 player game`() {
         val board = Board(3)
         val turnController = TurnController(board)
         turnController.findStartingPlayer()
