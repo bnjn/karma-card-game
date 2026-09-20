@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  JAVA_DISTRIBUTION: amazon
+  JAVA_DISTRIBUTION: corretto
   JAVA_VERSION: 22
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages

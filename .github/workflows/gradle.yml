@@ -7,7 +7,7 @@ on:
   push
 
 env:
-  JAVA_DISTRIBUTION: amazon
+  JAVA_DISTRIBUTION: corretto
   JAVA_VERSION: 22
 
 concurrency:
