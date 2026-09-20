@@ -23,8 +23,9 @@ import kotlin.random.Random
 class TurnController(
     override val board: Board,
 ) : ITurnController {
-    private val turnNumber: Int = 0
-    private var activePlayer: Player? = null
+    private var turnNumber: Int = 0
+    private var playerOrder: List<UUID> = board.getPlayerIds()
+    private var activePlayerId: UUID? = null
     private val startingPlayerCardValues: Map<CardRank, Int> =
         mapOf(
             THREE to 12,
@@ -42,12 +43,16 @@ class TurnController(
             TWO to 0,
         )
 
-    override fun getActivePlayer(): Player? = activePlayer
-
     override fun getTurnNumber(): Int = turnNumber
 
+    override fun getPlayerOrder(): List<UUID> = playerOrder
+
+    override fun getActivePlayerId(): UUID? = activePlayerId
+
     override fun findStartingPlayer(seed: Int?) {
-        val lowestCardPlayers: List<Pair<UUID, Int>> =
+        if (turnNumber > 0) throw IllegalStateException("Starting player has already been selected")
+
+        val playersByLowestCardRank: List<Pair<UUID, Int>> =
             board
                 .getPlayerIds()
                 .map { id ->
@@ -56,20 +61,26 @@ class TurnController(
                     Pair(id, faceUpCards.maxOf { startingPlayerCardValues.getValue(it.rank) })
                 }.sortedByDescending { it.second }
 
-        val playersWithLowestCards = lowestCardPlayers.filter { it.second == lowestCardPlayers.first().second }
+        val playersWithLowestCardRank = playersByLowestCardRank.filter { it.second == playersByLowestCardRank.first().second }
 
-        val startingPlayer = playersWithLowestCards.random(seed?.let { Random(it) } ?: Random).first
+        val activePlayerId = playersWithLowestCardRank.random(seed?.let { Random(it) } ?: Random).first
 
-        this.activePlayer = board.getPlayerById(startingPlayer)
+        val playerOrder =
+            arrayOf(
+                activePlayerId,
+                *playerOrder.filter { it !== activePlayerId }.toTypedArray(),
+            ).toList()
+
+        this.activePlayerId = activePlayerId
+        this.playerOrder = playerOrder
+        this.turnNumber = 1
     }
 
     override fun playTurn(
         playerId: UUID,
         card: Card,
     ) {
-        if (activePlayer ==
-            null
-        ) {
+        if (activePlayerId == null) {
             throw IllegalStateException("No starting player. TurnController.findStartingPlayer must be executed first")
         }
     }

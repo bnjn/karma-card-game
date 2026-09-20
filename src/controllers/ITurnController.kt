@@ -8,9 +8,11 @@ import player.Player
 interface ITurnController {
     val board: Board
 
-    fun getActivePlayer(): Player?
-
     fun getTurnNumber(): Int
+
+    fun getPlayerOrder(): List<UUID>
+
+    fun getActivePlayerId(): UUID?
 
     fun findStartingPlayer(seed: Int? = null)
 
